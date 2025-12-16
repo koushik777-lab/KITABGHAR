@@ -1,17 +1,12 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import pg from "pg";
-import * as schema from "@shared/schema";
+import mongoose from "mongoose";
 
-const { Pool } = pg;
-
-if (!process.env.DATABASE_URL) {
-  console.warn(
-    "DATABASE_URL not set. defaulting to memory storage."
-  );
+export async function connectDB() {
+  try {
+    const mongoURI = process.env.MONGODB_URI || "mongodb://0.0.0.0:27017/book-nook";
+    await mongoose.connect(mongoURI);
+    console.log("Connected to MongoDB");
+  } catch (error) {
+    console.error("Error connecting to MongoDB:", error);
+    process.exit(1);
+  }
 }
-
-export const pool = process.env.DATABASE_URL
-  ? new Pool({ connectionString: process.env.DATABASE_URL })
-  : null;
-
-export const db = pool ? drizzle(pool, { schema }) : null;
