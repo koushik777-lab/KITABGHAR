@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { BookOpen, Mail, Lock, Loader2, Eye, EyeOff } from "lucide-react";
@@ -15,7 +15,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { login, isAdmin } = useAuth();
+  const { login, user, isLoading: authLoading } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
@@ -24,16 +24,11 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      await login(email, password);
+      const user = await login(email, password);
       toast({
         title: "Welcome back!",
         description: "You have successfully logged in.",
       });
-      if (email === "admin741777@gmail.com") {
-        setLocation("/admin");
-      } else {
-        setLocation("/");
-      }
     } catch (error) {
       toast({
         title: "Login Failed",
@@ -44,6 +39,17 @@ export default function Login() {
       setIsLoading(false);
     }
   };
+
+  // Handle navigation in useEffect when user state changes
+  useEffect(() => {
+    if (!isLoading && user) {
+      if (user.role === 'admin') {
+        setLocation("/admin");
+      } else {
+        setLocation("/");
+      }
+    }
+  }, [user, isLoading, setLocation]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/5 p-4">

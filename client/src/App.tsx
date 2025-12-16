@@ -16,6 +16,7 @@ import AdminBooks from "@/pages/admin/Books";
 import AdminUsers from "@/pages/admin/Users";
 import AdminCategories from "@/pages/admin/Categories";
 import NotFound from "@/pages/not-found";
+import { ProtectedRoute } from "./lib/protected-route";
 
 function Router() {
   return (
@@ -26,10 +27,10 @@ function Router() {
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       <Route path="/bookmarks" component={Bookmarks} />
-      <Route path="/admin" component={AdminDashboard} />
-      <Route path="/admin/books" component={AdminBooks} />
-      <Route path="/admin/users" component={AdminUsers} />
-      <Route path="/admin/categories" component={AdminCategories} />
+      <ProtectedRoute path="/admin" component={AdminDashboard} adminOnly />
+      <ProtectedRoute path="/admin/books" component={AdminBooks} adminOnly />
+      <ProtectedRoute path="/admin/users" component={AdminUsers} adminOnly />
+      <ProtectedRoute path="/admin/categories" component={AdminCategories} adminOnly />
       <Route component={NotFound} />
     </Switch>
   );
